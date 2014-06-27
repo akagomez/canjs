@@ -1551,7 +1551,24 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 		equal(data.id,1, "correctly used parseModel");
 	});
 
+	test('#1089 - resource definition - inheritance', function() {
+		can.fixture('GET /things/{id}', function() {
+			return { id: 0, name: 'foo' };
+		});
 
+		var Base = can.Model.extend();
+		var Thing = Base.extend({
+			resource: '/things'
+		}, {});
 
+		stop();
+		Thing.findOne({ id: 0 }, function(thing) {
+			equal(thing.name, 'foo', 'found model in inherited model');
+			start();
+		}, function(e, msg) {
+			ok(false, msg);
+			start();
+		});
+	});
 
 });
