@@ -1190,7 +1190,7 @@ steal('can/util', 'can/map', 'can/list', function (can) {
 					// this will get turned into functions for parent constructs.
 					if (!can.isFunction(self[name]) || self.resource) {
 						// Either way, `ajaxMaker` will turn it into a function for us.
-						self[name] = ajaxMaker(method, self[name] && !self.resource ? self[name] : createURLFromResource(self, name));
+						self[name] = ajaxMaker(method, self[name] && !can.isFunction(self[name]) ? self[name] : createURLFromResource(self, name));
 					}
 
 					// There may also be a "maker" function (like `makeFindAll`) that alters the behavior of acting upon models

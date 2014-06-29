@@ -1571,4 +1571,34 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 		});
 	});
 
+	test('#1089 - resource definition - CRUD overrides', function() {
+		can.fixture('GET /things/{id}', function() {
+			return { id: 0, name: 'foo' };
+		});
+
+		can.fixture('GET /foos', function() {
+			return [{}];
+		});
+
+		var Thing = can.Model.extend({
+			resource: '/things',
+			findAll: 'GET /foos'
+		}, {});
+
+		var alldfd = Thing.findAll(),
+		onedfd = Thing.findOne({ id: 0 });
+
+		stop();
+		can.when(alldfd, onedfd)
+		.then(function(things, thing) {
+			equal(things.length, 1, 'findAll override called');
+			equal(thing.name, 'foo', 'resource findOne called');
+			start();
+		})
+		.fail(function() {
+			ok(false, 'override request failed');
+			start();
+		});
+	});
+
 });
