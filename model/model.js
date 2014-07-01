@@ -1183,14 +1183,15 @@ steal('can/util', 'can/map', 'can/list', function (can) {
 
 				// Go through `ajaxMethods` and set up static methods according to their configurations.
 				can.each(ajaxMethods, function (method, name) {
-					// Check the configuration for this ajaxMethod.
-					// If the configuration isn't a function, it should be a string (like `"GET /endpoint"`)
-					// or an object like `{url: "/endpoint", type: 'GET'}`.
-					// We also need to check for "resource" as a static property, as
-					// this will get turned into functions for parent constructs.
-					if (!can.isFunction(self[name]) || self.resource) {
-						// Either way, `ajaxMaker` will turn it into a function for us.
-						self[name] = ajaxMaker(method, self[name] && !can.isFunction(self[name]) ? self[name] : createURLFromResource(self, name));
+					//TODO: Docs
+					if(staticProps && staticProps[name] && typeof staticProps[name] === 'string') {
+						self[name] = ajaxMaker(method, staticProps[name]);
+					}
+					else if(staticProps && staticProps.resource) {
+						self[name] = ajaxMaker(method, createURLFromResource(self, name));
+					}
+					else if(!can.isFunction(self[name])) {
+						self[name] = ajaxMaker(method, self[name]);
 					}
 
 					// There may also be a "maker" function (like `makeFindAll`) that alters the behavior of acting upon models

@@ -1576,23 +1576,35 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 			return { id: 0, name: 'foo' };
 		});
 
+		can.fixture('POST /things', function() {
+			return { id: 1 };
+		});
+
 		can.fixture('GET /foos', function() {
 			return [{}];
 		});
 
 		var Thing = can.Model.extend({
 			resource: '/things',
-			findAll: 'GET /foos'
+			findAll: 'GET /foos',
+			create: function() {
+				return can.ajax({
+					url: '/things',
+					type: 'POST'
+				});
+			}
 		}, {});
 
 		var alldfd = Thing.findAll(),
-		onedfd = Thing.findOne({ id: 0 });
+		onedfd = Thing.findOne({ id: 0 }),
+		postdfd = new Thing().save();
 
 		stop();
-		can.when(alldfd, onedfd)
-		.then(function(things, thing) {
+		can.when(alldfd, onedfd, postdfd)
+		.then(function(things, thing, newthing) {
 			equal(things.length, 1, 'findAll override called');
 			equal(thing.name, 'foo', 'resource findOne called');
+			equal(newthing.id, 1, 'post override called with function');
 			start();
 		})
 		.fail(function() {
