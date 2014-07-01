@@ -1572,24 +1572,24 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 	});
 
 	test('#1089 - resource definition - CRUD overrides', function() {
-		can.fixture('GET /things/{id}', function() {
+		can.fixture('GET /foos/{id}', function() {
 			return { id: 0, name: 'foo' };
 		});
 
-		can.fixture('POST /things', function() {
+		can.fixture('POST /foos', function() {
 			return { id: 1 };
 		});
 
-		can.fixture('GET /foos', function() {
+		can.fixture('GET /bars', function() {
 			return [{}];
 		});
 
 		var Thing = can.Model.extend({
-			resource: '/things',
-			findAll: 'GET /foos',
+			resource: '/foos',
+			findAll: 'GET /bars',
 			create: function() {
 				return can.ajax({
-					url: '/things',
+					url: '/foos',
 					type: 'POST'
 				});
 			}
