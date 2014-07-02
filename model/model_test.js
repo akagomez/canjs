@@ -1580,6 +1580,10 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 			return { id: 1 };
 		});
 
+		can.fixture('PUT /foos/{id}', function() {
+			return { id: 1, updated: true };
+		});
+
 		can.fixture('GET /bars', function() {
 			return [{}];
 		});
@@ -1587,6 +1591,10 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 		var Thing = can.Model.extend({
 			resource: '/foos',
 			findAll: 'GET /bars',
+			update: {
+				url: '/foos/{id}',
+				type: 'PUT'
+			},
 			create: function() {
 				return can.ajax({
 					url: '/foos',
@@ -1605,7 +1613,11 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 			equal(things.length, 1, 'findAll override called');
 			equal(thing.name, 'foo', 'resource findOne called');
 			equal(newthing.id, 1, 'post override called with function');
-			start();
+
+			newthing.save(function(res) {
+				ok(res.updated, 'put override called with object');
+				start();
+			});
 		})
 		.fail(function() {
 			ok(false, 'override request failed');
