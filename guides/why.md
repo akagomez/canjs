@@ -121,7 +121,7 @@ If the result for of `Todo.findAll( { due: 'today' } )` and `Todo.findAll( { typ
 
 [Models can.Model] knows that this data represents the same todo and only creates one instance. This means that a single model instance is in both lists. By changing the todo’s name or destroying it, both lists will be changed.
 
-However, model only stores these model instances while something is binding to them. Once nothing is bound to the model instance, they are removed from the store, freeing their memory for garbage collection.
+However, [Models can.Model] only stores these model instances while something is binding to them. Once nothing is bound to the model instance, they are removed from the store, freeing their memory for garbage collection.
 
 ### Ease of use
 
