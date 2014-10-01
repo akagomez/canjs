@@ -1229,7 +1229,9 @@ steal('can/util', 'can/map', 'can/list', function (can) {
 					// If there was no prototype, or no `model` and no `parseModel`,
 					// we'll have to create a `parseModel`.
 					else if (!staticProps || (!staticProps[name] && !staticProps[parseName])) {
-						can.Construct._overwrite(self, base, parseName, parsers[parseName]());
+						if (! self[parseName]) {
+							can.Construct._overwrite(self, base, parseName, parsers[parseName]());
+						}
 					}
 				});
 
