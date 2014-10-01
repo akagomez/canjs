@@ -1435,6 +1435,44 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 
 	});
 
+	test("extend a Model that defines parseModel", function () {
+
+		var array = [{
+			id: 1,
+			name: "first"
+		}];
+
+		can.fixture("/genericmodels", function () {
+			return array;
+		});
+
+		var GenericModel = can.Model.extend({
+			findAll: "/genericmodels",
+			parseModels: function (raw, xhr) {
+				// only check this if jQuery because its deferreds can resolve with multiple args
+				if (window.jQuery) {
+					ok(xhr, "xhr object provided");
+				}
+
+				equal(array, raw, "got passed raw data");
+				return {
+					data: raw,
+					count: 1000
+				};
+			}
+		}, {});
+
+		var SpecificModel = GenericModel.extend({}, {});
+
+		stop();
+
+		SpecificModel.findAll({}, function (models) {
+			equal(models.count, 1000);
+			start();
+		});
+
+	});
+
 	test("Nested lists", function(){
 		var Teacher = can.Model.extend({});
 		var teacher = new Teacher();
