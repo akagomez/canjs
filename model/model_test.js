@@ -1404,6 +1404,43 @@ steal("can/model", 'can/map/attributes', "can/test", "can/util/fixture", functio
 
 	});
 
+	test("parseModel and findOne", function () {
+
+		var fauxModel = {
+			id: 1,
+			data: {
+				name: "first"
+			}
+		};
+
+		can.fixture("/mymodel", function () {
+			return fauxModel;
+		});
+
+		var MyModel = can.Model.extend({
+			findOne: "/mymodel",
+			parseModel: function (raw, xhr) {
+				// only check this if jQuery because its deferreds can resolve with multiple args
+				if (window.jQuery) {
+					ok(xhr, "xhr object provided");
+				}
+				equal(fauxModel, raw, "got passed raw data");
+				return {
+					id: 1,
+					name: 'first'
+				};
+			}
+		}, {});
+
+		stop();
+
+		MyModel.findOne({}, function (model) {
+			equal(model.name, 'first');
+			start();
+		});
+
+	});
+
 	test("parseModels and parseModel and findAll", function () {
 
 		can.fixture("/mymodels", function () {
