@@ -1,7 +1,7 @@
 /* jshint asi: false */
-steal("can/map/define", "can/route", "can/test", "steal-qunit", function () {
-	
-	
+steal("can/map/define", "can/route", "can/test", "can/view/mustache", "steal-qunit", function () {
+
+
 	QUnit.module('can/map/define');
 
 	// remove, type, default
@@ -822,5 +822,26 @@ steal("can/map/define", "can/route", "can/test", "steal-qunit", function () {
 
 		equal(m.attr('computable'), 1, 'compute2 readable via .attr()');
 	});
+
+	test('define getter with single arg and no initial value', function () {
+		var SpecialMap = can.Map.extend({
+			define: {
+				simpleVal: {
+					value: true
+				},
+				computedVal: {
+					get: function (presenseOfArgument) {
+						debugger;
+						return this.attr('simpleVal');
+					}
+				}
+			}
+		});
+
+		var m = new SpecialMap();
+		m.attr('computedVal');
+
+		equal(1, 1, '');
+	})
 
 });
